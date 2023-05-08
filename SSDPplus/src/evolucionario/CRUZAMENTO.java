@@ -36,7 +36,7 @@ public class CRUZAMENTO {
         Pattern[] Pnovo = new Pattern[tamanhoPopulacao];
         
         //int[] selecao = SELECAO.proporcao25_75(tamanhoPopulacao);
-        int[] selecao = SELECAO.torneioBinario(tamanhoPopulacao, P);           
+        int[] selecao = SELECAO.torneioBinario(tamanhoPopulacao, P);
         
         int indiceSelecao = 0;
         int indicePnovo = 0;
@@ -68,6 +68,45 @@ public class CRUZAMENTO {
                      
         return Pnovo;
         
+    }
+
+    public static Pattern[] uniforme2CDZ(Pattern[] P, double taxaMutacao, String tipoAvaliacao){
+        int tamanhoPopulacao = P.length;
+        Pattern[] Pnovo = new Pattern[tamanhoPopulacao];
+
+        //int[] selecao = SELECAO.proporcao25_75(tamanhoPopulacao);
+        int[] selecao = SELECAO.doisMenoresParaCadaCincoIndividuos(tamanhoPopulacao, P);
+
+        int indiceSelecao = 0;
+        int indicePnovo = 0;
+        while(indicePnovo < Pnovo.length-1){//Cuidado para não acessar índices maiores que o tamanho do array
+            if(Const.random.nextDouble() > taxaMutacao){
+                Pattern[] novos = CRUZAMENTO.uniforme2Individuos(P[selecao[indiceSelecao]], P[selecao[indiceSelecao+1]], tipoAvaliacao);
+                indiceSelecao += 2;
+                Pnovo[indicePnovo++] = novos[0];
+                if(indicePnovo < Pnovo.length){
+                    Pnovo[indicePnovo++] = novos[1];
+                }
+
+            }else{
+                Pnovo[indicePnovo++] = MUTACAO.unGeneTrocaOuAdicionaOuExclui(P[selecao[indiceSelecao++]], tipoAvaliacao);
+            }
+
+            //Imprimir itens nos idivíduos gerados via cruzamento
+//        DPinfo.imprimirItens(P[selecao[indiceSelecao-2]]);
+//        DPinfo.imprimirItens(P[selecao[indiceSelecao-1]]);
+//        System.out.print("->");
+//        DPinfo.imprimirItens(Pnovo[indicePnovo-2]);
+//        DPinfo.imprimirItens(Pnovo[indicePnovo-1]);
+//        System.out.println();
+        }
+
+        if(indicePnovo < Pnovo.length){
+            Pnovo[indicePnovo] = MUTACAO.unGeneTrocaOuAdicionaOuExclui(P[selecao[indiceSelecao++]], tipoAvaliacao);
+        }
+
+        return Pnovo;
+
     }
         
     /**Cruzamento gera dois indivíduos a partir do método uniforme

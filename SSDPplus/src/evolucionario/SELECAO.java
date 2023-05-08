@@ -68,6 +68,37 @@ public class SELECAO {
         }
         return indices;
     }
+
+    /**
+     * Seleciona dois indivíduos de menor qualidade a cada cinco indivíduos selecionados.
+     *
+     * @author gigazin
+     * @param tamanhoPopulacao
+     * @param P
+     * @return indices
+     */
+    public static int[] doisMenoresParaCadaCincoIndividuos(int tamanhoPopulacao, Pattern[] P){
+        int[] indices = new int[tamanhoPopulacao];
+        int qtdMenoresSelecionados = 0;
+        int qtdIndividuos = 0;
+        for(int i = 0; i < indices.length; i++){
+            int indiceP1 = Const.random.nextInt(P.length);
+            int indiceP2 = Const.random.nextInt(P.length);
+            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2){
+                indices[i] = indiceP2;
+                qtdMenoresSelecionados++;
+            }else{
+                indices[i] = indiceP1;
+            }
+            qtdIndividuos++;
+
+            if (qtdMenoresSelecionados == 2 && qtdIndividuos == 5) {
+                qtdIndividuos = 0;
+                qtdMenoresSelecionados = 0;
+            }
+        }
+        return indices;
+    }
     
     /**
      * Retorna índice vencedor em torneio binário (entre dois indivíduos aleatórios)
