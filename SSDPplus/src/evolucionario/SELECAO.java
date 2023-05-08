@@ -70,21 +70,21 @@ public class SELECAO {
     }
 
     /**
-     * Seleciona dois indivíduos de menor qualidade a cada cinco indivíduos selecionados.
+     * Seleciona seis indivíduos de menor qualidade a cada dez indivíduos selecionados.
      *
      * @author gigazin
      * @param tamanhoPopulacao
      * @param P
      * @return indices
      */
-    public static int[] doisMenoresParaCadaCincoIndividuos(int tamanhoPopulacao, Pattern[] P){
+    public static int[] seisMenoresParaCadaDezIndividuos(int tamanhoPopulacao, Pattern[] P){
         int[] indices = new int[tamanhoPopulacao];
         int qtdMenoresSelecionados = 0;
         int qtdIndividuos = 0;
         for(int i = 0; i < indices.length; i++){
             int indiceP1 = Const.random.nextInt(P.length);
             int indiceP2 = Const.random.nextInt(P.length);
-            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2){
+            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 6){
                 indices[i] = indiceP2;
                 qtdMenoresSelecionados++;
             }else{
@@ -92,7 +92,7 @@ public class SELECAO {
             }
             qtdIndividuos++;
 
-            if (qtdMenoresSelecionados == 2 && qtdIndividuos == 5) {
+            if (qtdMenoresSelecionados == 6 && qtdIndividuos == 10) {
                 qtdIndividuos = 0;
                 qtdMenoresSelecionados = 0;
             }

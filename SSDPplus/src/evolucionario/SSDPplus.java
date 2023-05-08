@@ -151,9 +151,9 @@ public class SSDPplus {
         //*******************************************
         //Data set                    ***************
         //*******************************************
-        String caminho = "C:\\Users\\tarci\\OneDrive\\Documentos\\NetBeansProjects\\SSDPplusGit\\pastas\\bases\\"; 
-        String nomeBase = "alon-clean50-pn-width-2.CSV";
-        //String nomeBase = "ENEM2014_81_NOTA_10k.csv";
+        String caminho = "C:\\ssdp_CDZ\\SSDPplus\\pastas\\bases\\";
+        //String nomeBase = "alon-clean50-pn-width-2.CSV";
+        String nomeBase = "ENEM2014_81_NOTA_10k.csv";
         //String nomeBase = "matrixBinaria-Global-100-p.csv";
         String caminhoBase = caminho + nomeBase;
        

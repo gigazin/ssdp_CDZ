@@ -80,7 +80,7 @@ public class SSDP_cdz {
         
             double mutationTax = 0.4; //Mutação inicia em 0.4. Crossover é sempre 1-mutationTax.
             //System.out.println("============================");
-            while(numeroGeracoesSemMelhoraPk < 5){
+            while(numeroGeracoesSemMelhoraPk < 4){
 
                 if(indiceGeracoes == 1){
                     Pnovo = CRUZAMENTO.ANDduasPopulacoes(P, P, tipoAvaliacao);
@@ -99,9 +99,9 @@ public class SSDP_cdz {
                 //System.out.println("Modificações em Pk: " + novosK);
                 //Definição automática de mutação de crossover
                 if(novosK > 0 && mutationTax > 0.0){//Aumenta cruzamento se Pk estiver evoluindo e se mutação não não for a menos possível.
-                    mutationTax -= 0.2;
+                    mutationTax -= 0.3;
                 }else if(novosK == 0 && mutationTax < 1.0){//Aumenta mutação caso Pk não tenha evoluido e mutação não seja maior que o limite máximo.
-                     mutationTax += 0.2;
+                     mutationTax += 0.3;
                 }
                 //Critério de parada: 3x sem evoluir Pk com taxa de mutação 1.0
                 if(novosK == 0 && mutationTax == 1.0){
@@ -152,7 +152,7 @@ public class SSDP_cdz {
         //*******************************************
         //Data set                    ***************
         //*******************************************
-        String caminho = "C:\\ssdp_CDZ\\data sets\\Bioinformatic\\";
+        String caminho = "C:\\ssdp_CDZ\\SSDPplus\\pastas\\bases\\";
         String nomeBase = "alon-clean50-pn-width-2.CSV";
         //String nomeBase = "ENEM2014_81_NOTA_10k.csv";
         //String nomeBase = "matrixBinaria-Global-100-p.csv";
