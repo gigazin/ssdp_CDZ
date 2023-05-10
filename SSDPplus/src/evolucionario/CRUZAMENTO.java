@@ -75,7 +75,7 @@ public class CRUZAMENTO {
         Pattern[] Pnovo = new Pattern[tamanhoPopulacao];
 
         //int[] selecao = SELECAO.proporcao25_75(tamanhoPopulacao);
-        int[] selecao = SELECAO.cincoMenoresParaCadaDezIndividuos(tamanhoPopulacao, P);
+        int[] selecao = SELECAO.doisMenoresParaCadaDezIndividuos(tamanhoPopulacao, P);
 
         int indiceSelecao = 0;
         int indicePnovo = 0;

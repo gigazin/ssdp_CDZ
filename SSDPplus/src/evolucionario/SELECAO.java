@@ -70,36 +70,33 @@ public class SELECAO {
     }
 
     /**
-     * Seleciona cinco indivíduos de menor qualidade a cada dez indivíduos selecionados.
-     *
+     * Seleciona dois indivíduos de menor qualidade a cada dez indivíduos.
+     * Inicia selecionando dois indivíduos de menor qualidade. Depois, seleciona o resto por torneio binário.
      * @author gigazin
      * @param tamanhoPopulacao
      * @param P
-     * @return indices
+     * @return int[]
      */
-    public static int[] cincoMenoresParaCadaDezIndividuos(int tamanhoPopulacao, Pattern[] P){
+    public static int[] doisMenoresParaCadaDezIndividuos(int tamanhoPopulacao, Pattern[] P){
         int[] indices = new int[tamanhoPopulacao];
         int qtdMenoresSelecionados = 0;
         int qtdIndividuos = 0;
         for(int i = 0; i < indices.length; i++){
             int indiceP1 = Const.random.nextInt(P.length);
             int indiceP2 = Const.random.nextInt(P.length);
-            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 6){
+            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2){ // Seleciona menor
                 indices[i] = indiceP2;
                 qtdMenoresSelecionados++;
-            } else if (P[indiceP1].getQualidade() < P[indiceP2].getQualidade() && qtdMenoresSelecionados < 6) {
+            } else if (P[indiceP1].getQualidade() < P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2) { // Seleciona menor
                 indices[i] = indiceP1;
                 qtdMenoresSelecionados++;
-            } else {
-                if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados > 5) {
-                    indices[i] = indiceP1;
-                } else {
-                    indices[i] = indiceP2;
-                }
+            } else { // Seleção binária padrão
+                if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados > 2) indices[i] = indiceP1;
+                else indices[i] = indiceP2;
             }
             qtdIndividuos++;
 
-            if (qtdMenoresSelecionados == 5 && qtdIndividuos == 10) {
+            if (qtdIndividuos == 10) { // Reseta contagem
                 qtdIndividuos = 0;
                 qtdMenoresSelecionados = 0;
             }

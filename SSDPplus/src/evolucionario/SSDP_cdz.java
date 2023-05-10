@@ -80,7 +80,7 @@ public class SSDP_cdz {
         
             double mutationTax = 0.4; //Mutação inicia em 0.4. Crossover é sempre 1-mutationTax.
             //System.out.println("============================");
-            while(numeroGeracoesSemMelhoraPk < 4){
+            while(numeroGeracoesSemMelhoraPk < 3){
 
                 if(indiceGeracoes == 1){
                     Pnovo = CRUZAMENTO.ANDduasPopulacoes(P, P, tipoAvaliacao);
@@ -153,9 +153,9 @@ public class SSDP_cdz {
         //Data set                    ***************
         //*******************************************
         String caminho = "C:\\ssdp_CDZ\\SSDPplus\\pastas\\bases\\";
-        String nomeBase = "alon-clean50-pn-width-2.CSV";
+        //String nomeBase = "alon-clean50-pn-width-2.CSV";
         //String nomeBase = "ENEM2014_81_NOTA_10k.csv";
-        //String nomeBase = "matrixBinaria-Global-100-p.csv";
+        String nomeBase = "matrixBinaria-Global-100-p.csv";
         String caminhoBase = caminho + nomeBase;
        
         //separator database (CSV files)
