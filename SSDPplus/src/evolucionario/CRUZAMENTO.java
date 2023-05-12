@@ -70,12 +70,12 @@ public class CRUZAMENTO {
         
     }
 
-    public static Pattern[] uniforme2CDZ(Pattern[] P, double taxaMutacao, String tipoAvaliacao){
+    public static Pattern[] uniforme2PopCDZ(Pattern[] P, double taxaMutacao, String tipoAvaliacao){
         int tamanhoPopulacao = P.length;
         Pattern[] Pnovo = new Pattern[tamanhoPopulacao];
 
         //int[] selecao = SELECAO.proporcao25_75(tamanhoPopulacao);
-        int[] selecao = SELECAO.doisMenoresParaCadaDezIndividuos(tamanhoPopulacao, P);
+        int[] selecao = SELECAO.selecao1d20ComTorneioBinario(tamanhoPopulacao, P);
 
         int indiceSelecao = 0;
         int indicePnovo = 0;

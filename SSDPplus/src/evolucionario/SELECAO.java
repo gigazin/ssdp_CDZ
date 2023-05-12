@@ -8,6 +8,7 @@ package evolucionario;
 import dp.Avaliador;
 import dp.Const;
 import dp.Pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,55 +16,56 @@ import java.util.HashSet;
 
 
 /**
- *
  * @author Tarcísio Pontes
- * @since 27/01/2016
  * @version 1.0
  * Revisão ok!
+ * @since 27/01/2016
  */
 public class SELECAO {
-        
+
     /**
      * Os 75% primeiros índices são selecionados dentre os 25% melhores,
      * considerando que os indivíduoes estão em ordenados do melhor para o pior.
      * Os 25% restantes são índices aleatórios entre zero e o tamanho da população
      * A quantidade de índies retornado é sempre do mesmo do tamanho da população.
-     *@author Tarcísio Lucas
+     *
      * @param tamanhoPopulacao
      * @return int[]
-     * @since 14/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 14/01/2016
      */
-    public static int[] proporcao25_75(int tamanhoPopulacao){
+    public static int[] proporcao25_75(int tamanhoPopulacao) {
         int[] indices = new int[tamanhoPopulacao];
         int i = 0;
-        for(; i < tamanhoPopulacao*0.75; i++){
-            indices[i] = Const.random.nextInt(tamanhoPopulacao*1/4);
+        for (; i < tamanhoPopulacao * 0.75; i++) {
+            indices[i] = Const.random.nextInt(tamanhoPopulacao * 1 / 4);
         }
-        for(; i < tamanhoPopulacao; i++){
+        for (; i < tamanhoPopulacao; i++) {
             indices[i] = Const.random.nextInt(tamanhoPopulacao);
         }
         return indices;
     }
-    
+
     /**
      * Retorna índices vencedores em torneios binários (entre dois indivíduos)
-     *@author Tarcísio Lucas
+     *
      * @param tamanhoPopulacao
-     * @param  P população
+     * @param P                população
      * @return int[] - índices vencedores de P
-     * @since 27/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 27/01/2016
      */
-    public static int[] torneioBinario(int tamanhoPopulacao, Pattern[] P){
+    public static int[] torneioBinario(int tamanhoPopulacao, Pattern[] P) {
         int[] indices = new int[tamanhoPopulacao];
-        for(int i = 0; i < indices.length; i++){
+        for (int i = 0; i < indices.length; i++) {
             int indiceP1 = Const.random.nextInt(P.length);
             int indiceP2 = Const.random.nextInt(P.length);
-            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade()){
+            if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade()) {
                 indices[i] = indiceP1;
-            }else{
-                indices[i] = indiceP2;         
+            } else {
+                indices[i] = indiceP2;
             }
         }
         return indices;
@@ -72,26 +74,27 @@ public class SELECAO {
     /**
      * Seleciona dois indivíduos de menor qualidade a cada dez indivíduos.
      * Inicia selecionando dois indivíduos de menor qualidade. Depois, seleciona o resto por torneio binário.
-     * @author gigazin
+     *
      * @param tamanhoPopulacao
      * @param P
      * @return int[]
+     * @author gigazin
      */
-    public static int[] doisMenoresParaCadaDezIndividuos(int tamanhoPopulacao, Pattern[] P){
+    public static int[] doisMenoresParaCadaDezIndividuos(int tamanhoPopulacao, Pattern[] P) {
         int[] indices = new int[tamanhoPopulacao];
         int qtdMenoresSelecionados = 0;
         int qtdIndividuos = 0;
-        for(int i = 0; i < indices.length; i++){
+        for (int i = 0; i < indices.length; i++) {
             int indiceP1 = Const.random.nextInt(P.length);
             int indiceP2 = Const.random.nextInt(P.length);
-            if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2){ // Seleciona menor
+            if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2) { // Seleciona menor
                 indices[i] = indiceP2;
                 qtdMenoresSelecionados++;
             } else if (P[indiceP1].getQualidade() < P[indiceP2].getQualidade() && qtdMenoresSelecionados < 2) { // Seleciona menor
                 indices[i] = indiceP1;
                 qtdMenoresSelecionados++;
             } else { // Seleção binária padrão
-                if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade() && qtdMenoresSelecionados > 2) indices[i] = indiceP1;
+                if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade()) indices[i] = indiceP1;
                 else indices[i] = indiceP2;
             }
             qtdIndividuos++;
@@ -103,261 +106,353 @@ public class SELECAO {
         }
         return indices;
     }
-    
+
+    /**
+     * Seleciona 10 indivíduos através de torneio binário. Em seguida, seleciona 3 indivíduos através do 1d20.
+     * Em caso de resultados iguais, será selecionado o indivíduo com a maior qualidade.
+     * Depois, reseta a contagem e continua nesse ciclo.
+     *
+     * @param tamanhoPopulacao
+     * @param P
+     * @return int[]
+     * @author gigazin
+     */
+    public static int[] selecao1d20ComTorneioBinario(int tamanhoPopulacao, Pattern[] P) {
+        int[] indices = new int[tamanhoPopulacao];
+        int p1d20;
+        int p2d20;
+        int qtdd20 = 0;
+        int qtdIndividuos = 0;
+
+        for (int i = 0; i < indices.length; i++) {
+            int indiceP1 = Const.random.nextInt(P.length);
+            int indiceP2 = Const.random.nextInt(P.length);
+            if (P[indiceP1].getQualidade() != P[indiceP2].getQualidade()) {
+                if (qtdIndividuos < 10) { // Torneio binário padrão.
+                    if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade()) {
+                        indices[i] = indiceP1;
+                    }
+                    else {
+                        indices[i] = indiceP2;
+                    }
+
+                    qtdIndividuos++;
+                } else { // Seleção através de 1d20
+                    p1d20 = Const.random.nextInt(1, 20); // P1 joga 1d20
+                    p2d20 = Const.random.nextInt(1, 20); // P2 joga 1d20
+
+                    if (p1d20 != p2d20) { // Resultados diferentes, seleciona o indivíduo que tirou o maior valor.
+                        if (p1d20 > p2d20) indices[i] = indiceP1;
+                        else indices[i] = indiceP2;
+                    } else { // Resultados iguais, seleciona o indivíduo com a maior qualidade (seleção binária)
+                        if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade()) indices[i] = indiceP1;
+                        else indices[i] = indiceP2;
+                    }
+
+                    qtdd20++;
+                }
+            }
+
+            if (qtdd20 == 3 && qtdIndividuos == 10) {
+                qtdd20 = 0;
+                qtdIndividuos = 0;
+            }
+        }
+        return indices;
+    }
+
+    /**
+     * Seleciona todos os indivíduos através do 1d20, selecionando o indivíduo que tirar o maior resultado.
+     * Em caso de resultados iguais, ambos os indivíduos são descartados.
+     *
+     * @param tamanhoPopulacao
+     * @param P
+     * @return int[]
+     * @author gigazin
+     */
+    public static int[] selecao1d20SemTorneioBinario(int tamanhoPopulacao, Pattern[] P) {
+        int[] indices = new int[tamanhoPopulacao];
+        int p1d20;
+        int p2d20;
+        int qtdd20 = 0;
+
+        for (int i = 0; i < indices.length; i++) {
+            int indiceP1 = Const.random.nextInt(P.length);
+            int indiceP2 = Const.random.nextInt(P.length);
+
+            p1d20 = Const.random.nextInt(1, 20); // P1 joga 1d20
+            p2d20 = Const.random.nextInt(1, 20); // P2 joga 1d20
+
+            if (p1d20 != p2d20) { // Resultados diferentes, seleciona o indivíduo que tirou o maior valor.
+                if (p1d20 > p2d20) indices[i] = indiceP1;
+                else indices[i] = indiceP2;
+            }
+        }
+        return indices;
+    }
+
+
     /**
      * Retorna índice vencedor em torneio binário (entre dois indivíduos aleatórios)
-     *@author Tarcísio Lucas
-     * @param  P população
+     *
+     * @param P população
      * @return int - índice vencedore de P
-     * @since 27/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 27/01/2016
      */
-    public static int torneioBinario(Pattern[] P){
+    public static int torneioBinario(Pattern[] P) {
         int indiceP1 = Const.random.nextInt(P.length);
         int indiceP2 = Const.random.nextInt(P.length);
-        if(P[indiceP1].getQualidade() > P[indiceP2].getQualidade()){
+        if (P[indiceP1].getQualidade() > P[indiceP2].getQualidade()) {
             return indiceP1;
-        }else{
-            return indiceP2;                     
-        }        
+        } else {
+            return indiceP2;
+        }
     }
-    
-    
+
+
     /**
      * Recebe duas populações de mesmo tamanho T e retorna os T melhores
      * indivíduos distintos.
-     *@author Tarcísio Lucas
-     * @param P PAtterns[]
+     *
+     * @param P     PAtterns[]
      * @param Pnovo PAtterns[]
      * @return Pattern[]
-     * @since 27/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 27/01/2016
      */
-    public static Pattern[] selecionarMelhoresDistintos(Pattern[] P, Pattern[] Pnovo){
+    public static Pattern[] selecionarMelhoresDistintos(Pattern[] P, Pattern[] Pnovo) {
         int tamanhoPopulacao = P.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
         ArrayList<Pattern> patternAux = new ArrayList<>();
-        
+
         //System.out.println("\tAdicioando P");
         patternAux.addAll(Arrays.asList(P));
-        
+
         //System.out.println("\tAdicioando Pnovos");
         for (Pattern pnovo : Pnovo) {
             if (SELECAO.ehInedito(pnovo, patternAux)) {
-                patternAux.add(pnovo);                
-            }           
+                patternAux.add(pnovo);
+            }
         }
         //int numeroIneditosNovo = patternAux.size() - P.length;
-        
+
         //System.out.println("\tOrdenando...");
         Collections.sort(patternAux);
         //System.out.println("\tCopiando |P| melhores...");
-        for(int i = 0; i < PAsterisco.length; i++){
+        for (int i = 0; i < PAsterisco.length; i++) {
             PAsterisco[i] = patternAux.get(i);
-        }        
+        }
         //System.out.println("|Pnovo| = " + numeroIneditosNovo);
         return PAsterisco;
     }
-        
+
     /**
      * Recebe 03 populações de mesmo tamanho T e retorna os T melhores
      * indivíduos distintos.
-     *@author Tarcísio Lucas
+     *
      * @param P1 PAtterns[]
      * @param P2 PAtterns[]
      * @param P3 PAtterns[]
      * @return Pattern[]
-     * @since 29/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 29/01/2016
      */
-    public static Pattern[] selecionarMelhoresDistintos(Pattern[] P1, Pattern[] P2, Pattern[] P3){
+    public static Pattern[] selecionarMelhoresDistintos(Pattern[] P1, Pattern[] P2, Pattern[] P3) {
         int tamanhoPopulacao = P1.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
         ArrayList<Pattern> patternAux = new ArrayList<>();
-        
+
         //System.out.println("\tAdicioando P");
         patternAux.addAll(Arrays.asList(P1));
-        
+
         //System.out.println("\tAdicioando Pnovos");
         for (Pattern p2 : P2) {
             if (SELECAO.ehInedito(p2, patternAux)) {
-                patternAux.add(p2);                
-            }           
+                patternAux.add(p2);
+            }
         }
-        
+
         //System.out.println("\tAdicioando Pnovos");
         for (Pattern p3 : P3) {
             if (SELECAO.ehInedito(p3, patternAux)) {
-                patternAux.add(p3);                
-            }           
+                patternAux.add(p3);
+            }
         }
         //int numeroIneditosNovo = patternAux.size() - P.length;
-        
+
         //System.out.println("\tOrdenando...");
         Collections.sort(patternAux);
         //System.out.println("\tCopiando |P| melhores...");
-        for(int i = 0; i < PAsterisco.length; i++){
+        for (int i = 0; i < PAsterisco.length; i++) {
             PAsterisco[i] = patternAux.get(i);
-        }        
+        }
         //System.out.println("|Pnovo| = " + numeroIneditosNovo);
         return PAsterisco;
     }
-       
+
     /**
      * Recebe duas populações de mesmo tamanho T e retorna os T melhores
      * indivíduos NÃO distintos! Ou seja, não controla se indivíduos são
      * distintos.
-     *@author Tarcísio Lucas
-     * @param P PAtterns[]
+     *
+     * @param P     PAtterns[]
      * @param Pnovo PAtterns[]
      * @return Pattern[]
-     * @since 27/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 27/01/2016
      */
-    public static Pattern[] selecionarMelhores(Pattern[] P, Pattern[] Pnovo){
+    public static Pattern[] selecionarMelhores(Pattern[] P, Pattern[] Pnovo) {
         int tamanhoPopulacao = P.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
-        Pattern[] PAuxiliar = new Pattern[2*tamanhoPopulacao];        
-        System.arraycopy(P, 0, PAuxiliar, 0, P.length);        
-        System.arraycopy(Pnovo, 0, PAuxiliar, P.length, Pnovo.length);        
-        Arrays.sort(PAuxiliar);                
-        System.arraycopy(PAuxiliar, 0, PAsterisco, 0, PAsterisco.length);                
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
+        Pattern[] PAuxiliar = new Pattern[2 * tamanhoPopulacao];
+        System.arraycopy(P, 0, PAuxiliar, 0, P.length);
+        System.arraycopy(Pnovo, 0, PAuxiliar, P.length, Pnovo.length);
+        Arrays.sort(PAuxiliar);
+        System.arraycopy(PAuxiliar, 0, PAsterisco, 0, PAsterisco.length);
         return PAsterisco;
     }
-    
-    
+
+
     /**
      * PAsterisco recebe aleatórios entre P e Pnovo, além de Pk.
-     *@author Tarcísio Lucas
-     * @param P Pattern[]
+     *
+     * @param P     Pattern[]
      * @param Pnovo Pattern[]
-     * @param Pk Pattern[]
+     * @param Pk    Pattern[]
      * @return Pattern[]
-     * @since 22/07/2017
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 22/07/2017
      */
-    public static Pattern[] selecionarAleatorio(Pattern[] P, Pattern[] Pnovo, Pattern[] Pk){
+    public static Pattern[] selecionarAleatorio(Pattern[] P, Pattern[] Pnovo, Pattern[] Pk) {
         int tamanhoPopulacao = P.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
-        
-                
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
+
+
         int i = 0;
-        if(Pk.length * 10 < tamanhoPopulacao){
-            for(; i < Pk.length; i++){
+        if (Pk.length * 10 < tamanhoPopulacao) {
+            for (; i < Pk.length; i++) {
                 PAsterisco[i] = Pk[Const.random.nextInt(Pk.length)];
             }
-        }else{
-            for(; i < tamanhoPopulacao/10; i++){
+        } else {
+            for (; i < tamanhoPopulacao / 10; i++) {
                 PAsterisco[i] = Pk[i];
             }
         }
-        
-        for(; i < tamanhoPopulacao; i++){
-            if(Const.random.nextBoolean()){
+
+        for (; i < tamanhoPopulacao; i++) {
+            if (Const.random.nextBoolean()) {
                 PAsterisco[i] = P[Const.random.nextInt(tamanhoPopulacao)];
-            }else{
+            } else {
                 PAsterisco[i] = Pnovo[Const.random.nextInt(tamanhoPopulacao)];
             }
         }
         Arrays.sort(PAsterisco);
         return PAsterisco;
     }
-    
-    /**Gera PAsterisco da seguinte forma:
+
+    /**
+     * Gera PAsterisco da seguinte forma:
      * 50%: os melhores entre P e Pnovo
      * 50%: aleatório entre os desconsiderado na primeira parte.
      * Objetivo é gerar mais diversidade em P
+     *
      * @param P
      * @param Pnovo
-     * @return 
+     * @return
      * @since 25/07/2017
      */
-    public static Pattern[] selecionarMelhores50Aleatorio50(Pattern[] P, Pattern[] Pnovo){
+    public static Pattern[] selecionarMelhores50Aleatorio50(Pattern[] P, Pattern[] Pnovo) {
         int tamanhoPopulacao = P.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
-        Pattern[] PAuxiliar = new Pattern[2*tamanhoPopulacao];        
-        System.arraycopy(P, 0, PAuxiliar, 0, P.length);        
-        System.arraycopy(Pnovo, 0, PAuxiliar, P.length, Pnovo.length);        
-        Arrays.sort(PAuxiliar);                
-        
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
+        Pattern[] PAuxiliar = new Pattern[2 * tamanhoPopulacao];
+        System.arraycopy(P, 0, PAuxiliar, 0, P.length);
+        System.arraycopy(Pnovo, 0, PAuxiliar, P.length, Pnovo.length);
+        Arrays.sort(PAuxiliar);
+
         //PAsterisco <- 50% melhores indivíduoes entre P e Pnovo.
-        int indiceMelhores = PAsterisco.length/2;
+        int indiceMelhores = PAsterisco.length / 2;
         System.arraycopy(PAuxiliar, 0, PAsterisco, 0, indiceMelhores);
-        
+
         //PAsterisco <- 50% aleatório entre os demais indivíduos. 
         //Os indivíduoes inseridos na primeira parte são desconsiderados aqui.
         int i = indiceMelhores;
-        for(; i < PAsterisco.length; i++){
+        for (; i < PAsterisco.length; i++) {
             int indiceRandom = indiceMelhores + Const.random.nextInt(PAuxiliar.length - indiceMelhores);
             PAsterisco[i] = PAuxiliar[indiceRandom];
         }
         return PAsterisco;
     }
-    
-    
-    
+
+
     /**
      * Recebe duas populações de mesmo tamanho T e retorna os T melhores
      * indivíduos NÃO distintos! Ou seja, não controla se indivíduos são
      * distintos.
-     *@author Tarcísio Lucas
-     * @param P PAtterns[]
+     *
+     * @param P     PAtterns[]
      * @param Pnovo PAtterns[]
      * @return Pattern[]
-     * @since 27/01/2016
+     * @author Tarcísio Lucas
      * @version 1.0
+     * @since 27/01/2016
      */
-    public static Pattern[] selecionarMelhores(Pattern[] P1, Pattern[] P2, Pattern[] P3){
+    public static Pattern[] selecionarMelhores(Pattern[] P1, Pattern[] P2, Pattern[] P3) {
         int tamanhoPopulacao = P1.length;
-        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];        
-        Pattern[] PAuxiliar = new Pattern[3*tamanhoPopulacao];        
-        System.arraycopy(P1, 0, PAuxiliar, 0, tamanhoPopulacao);        
+        Pattern[] PAsterisco = new Pattern[tamanhoPopulacao];
+        Pattern[] PAuxiliar = new Pattern[3 * tamanhoPopulacao];
+        System.arraycopy(P1, 0, PAuxiliar, 0, tamanhoPopulacao);
         System.arraycopy(P2, 0, PAuxiliar, tamanhoPopulacao, tamanhoPopulacao);
-        System.arraycopy(P3, 0, PAuxiliar, tamanhoPopulacao*2, tamanhoPopulacao);        
-        Arrays.sort(PAuxiliar);                
-        System.arraycopy(PAuxiliar, 0, PAsterisco, 0, PAsterisco.length);                
+        System.arraycopy(P3, 0, PAuxiliar, tamanhoPopulacao * 2, tamanhoPopulacao);
+        Arrays.sort(PAuxiliar);
+        System.arraycopy(PAuxiliar, 0, PAsterisco, 0, PAsterisco.length);
         return PAsterisco;
     }
-    
-    
-    
-    /**Atualiza Pk com os indivíduos de melhor qualidade presentes em PAsterísco. 
+
+
+    /**
+     * Atualiza Pk com os indivíduos de melhor qualidade presentes em PAsterísco.
      * Retorna o número de substituições realizadas em Pk.
-     *@author Tarcísio Lucas
-     * @param Pk Pattern[] - top-k indivíduos ordenados e distintos
+     *
+     * @param Pk         Pattern[] - top-k indivíduos ordenados e distintos
      * @param PAsterisco Pattern[] - população de indivíduos ordenados
      * @return Pattern[] - número de novos indivíduoes inseridos em Pk
+     * @author Tarcísio Lucas
      */
-    public static int salvandoRelevantes(Pattern[] Pk, Pattern[] PAsterisco){
+    public static int salvandoRelevantes(Pattern[] Pk, Pattern[] PAsterisco) {
         int indiceP = 0;
         int novosk10 = 0;
-        while(indiceP < PAsterisco.length && (PAsterisco[indiceP].getQualidade() > Pk[Pk.length-1].getQualidade())){
-            if(SELECAO.ehRelevante(PAsterisco[indiceP], Pk)){
-                Pk[Pk.length-1] = PAsterisco[indiceP];
-                Arrays.sort(Pk);                                    
+        while (indiceP < PAsterisco.length && (PAsterisco[indiceP].getQualidade() > Pk[Pk.length - 1].getQualidade())) {
+            if (SELECAO.ehRelevante(PAsterisco[indiceP], Pk)) {
+                Pk[Pk.length - 1] = PAsterisco[indiceP];
+                Arrays.sort(Pk);
                 novosk10++;
             }
             indiceP++;
         }
         return novosk10;
     }
-    
-    
-    
-    
-    
-    /**Atualiza Pk com os indivíduos de melhor qualidade presentes em PAsterísco. 
+
+
+    /**
+     * Atualiza Pk com os indivíduos de melhor qualidade presentes em PAsterísco.
      * Retorna o número de substituições realizadas em Pk.
      * Redundância: indivíduos similares não são descartados e sim relacionados:
      * Mais detalhes depois!
-     *@author Tarcísio Pontes
-     * @param Pk Pattern[] - top-k indivíduos ordenados e distintos
+     *
+     * @param Pk         Pattern[] - top-k indivíduos ordenados e distintos
      * @param PAsterisco Pattern[] - população de indivíduos ordenados
      * @return Pattern[] - número de novos indivíduoes inseridos em Pk
+     * @author Tarcísio Pontes
      */
-    public static int salvandoRelevantesDPmais(Pattern[] Pk, Pattern[] PAsterisco, double similaridadeLimite){
+    public static int salvandoRelevantesDPmais(Pattern[] Pk, Pattern[] PAsterisco, double similaridadeLimite) {
         int novosk = 0;
-        for( int i = 0; i < PAsterisco.length && (PAsterisco[i].getQualidade() > Pk[Pk.length-1].getQualidade()); i++){
+        for (int i = 0; i < PAsterisco.length && (PAsterisco[i].getQualidade() > Pk[Pk.length - 1].getQualidade()); i++) {
             Pattern p_PAsterisco = PAsterisco[i];
             //Três possibilidades
             //(1) igual a alguma DP de Pk: descartar
@@ -365,115 +460,116 @@ public class SELECAO {
             //(3) similar
             //(3.1) similar com p_Pk maior: p_Pk engloba como similar e não muda a ordem das DPs em Pk
             //(3.2) similar com p_PAsterisco maior: p_PAsterisco engloba como similar p_Pk, ocupa a vaga em Pk[i] e reordena-se Pk
-            for(int j = 0; j < Pk.length; j++){
+            for (int j = 0; j < Pk.length; j++) {
                 Pattern p_Pk = Pk[j];
                 //double similaridade = SELECAO.similaridadeDPpositivo(p_PAsterisco, p_Pk);
                 double similaridade = Avaliador.similaridade(p_Pk, p_PAsterisco, Pattern.medidaSimilaridade);
-                if(similaridade >= similaridadeLimite){// Houve similaridade
+                if (similaridade >= similaridadeLimite) {// Houve similaridade
                     //Se eles tiverem os mesmos itens, descartar! (1)
-                    if(p_PAsterisco.ehIgual(p_Pk)){
+                    if (p_PAsterisco.ehIgual(p_Pk)) {
                         break; //sair do for que itera Pk 
-                    }else{
+                    } else {
                         //Se não, Se pk melhor que p* ou (pk == p* and pk.size <= p*.size)
-                        if(p_Pk.getQualidade() > p_PAsterisco.getQualidade() ||
-                                (p_Pk.getQualidade() == p_PAsterisco.getQualidade() && p_Pk.getItens().size() <= p_PAsterisco.getItens().size()) 
-                                ){
+                        if (p_Pk.getQualidade() > p_PAsterisco.getQualidade() ||
+                                (p_Pk.getQualidade() == p_PAsterisco.getQualidade() && p_Pk.getItens().size() <= p_PAsterisco.getItens().size())
+                        ) {
                             boolean aproveitadoEmPk = p_Pk.addSimilar(p_PAsterisco);
-                            if(aproveitadoEmPk){
+                            if (aproveitadoEmPk) {
                                 novosk++;
                             }
-                        }else{
+                        } else {
                             Pk[j] = new Pattern(p_PAsterisco.getItens(), p_PAsterisco.getTipoAvaliacao());
                             //Adicionando p_Pk como filho de P_PAsterisco
                             Pk[j].addSimilar(p_Pk);
-                            
+
                             //filhos de p_Pk podem ser adicionado a Pk.
-                            if(p_Pk.getSimilares() != null){
+                            if (p_Pk.getSimilares() != null) {
                                 SELECAO.salvandoRelevantesDPmais(Pk, p_Pk.getSimilares(), similaridadeLimite);
-                            }                            
+                            }
                             Arrays.sort(Pk);
                             novosk++;
-                        }                        
+                        }
                         break; //sair do for que itera Pk
                     }
-                                       
-                }else if(j == Pk.length-1){//Se dp.new não for similar a nenhuma DP de Pk, então ele substitui a última
-                    Pk[Pk.length-1] = new Pattern(p_PAsterisco.getItens(), p_PAsterisco.getTipoAvaliacao());
-                    Arrays.sort(Pk);                                    
-                    novosk++;                    
-                }       
+
+                } else if (j == Pk.length - 1) {//Se dp.new não for similar a nenhuma DP de Pk, então ele substitui a última
+                    Pk[Pk.length - 1] = new Pattern(p_PAsterisco.getItens(), p_PAsterisco.getTipoAvaliacao());
+                    Arrays.sort(Pk);
+                    novosk++;
+                }
             }//for percorre Pk     
         }
         return novosk;
     }
-    
-    
-    
-    
-    
+
+
     /**
      * Retorna se um Pattern P é inédito em relação a um Conjunto de patterns.
-     * @author Tarcísio Pontes
-     * @param p Patteern
+     *
+     * @param p     Patteern
      * @param pList ArrayList<Pattern>
      * @return boolean
-     * @since 27/01/2016
+     * @author Tarcísio Pontes
      * @version 1.0
+     * @since 27/01/2016
      */
-    private static boolean ehInedito(Pattern p, ArrayList<Pattern> pList){
-        
-        for(int i = 0; i < pList.size(); i++){
-            if(SELECAO.ehIgual(p, pList.get(i))){
+    private static boolean ehInedito(Pattern p, ArrayList<Pattern> pList) {
+
+        for (int i = 0; i < pList.size(); i++) {
+            if (SELECAO.ehIgual(p, pList.get(i))) {
                 return false;
             }
         }
         return true;
     }
-    
+
     /**
      * Retorna se um Pattern P1 é igual a outro P2.
      * Lembrando com os itens num Patterns nessa implementação não são ordenados.
      * Isso dificutou um pouco a lógica desse método.
-     * @author Tarcísio Pontes
+     *
      * @param p1 Patteern
      * @param p2 Patteern
      * @return boolean
-     * @since 27/01/2016
+     * @author Tarcísio Pontes
      * @version 1.0
+     * @since 27/01/2016
      */
-    private static boolean ehIgual(Pattern p1, Pattern p2){
-        if(p1.getQualidade() == p2.getQualidade()){//A maioria dos casos são resolvidos aqui.
+    private static boolean ehIgual(Pattern p1, Pattern p2) {
+        if (p1.getQualidade() == p2.getQualidade()) {//A maioria dos casos são resolvidos aqui.
             HashSet<Integer> itens1 = p1.getItens();
             HashSet<Integer> itens2 = p2.getItens();
-        
-            if(itens1.size() != itens2.size()){
+
+            if (itens1.size() != itens2.size()) {
                 return false;
-            }else{
+            } else {
                 return itens1.containsAll(itens2);
             }
-        }else{
+        } else {
             return false;
         }
-        
-        
+
+
     }
-    
-    /**Retorna se indivíduos candidato (fitness maior que pior indivíduo de Pk)
+
+    /**
+     * Retorna se indivíduos candidato (fitness maior que pior indivíduo de Pk)
      * é dominado por algum indivíduo de Pk.
      * Se for igual a algum indivíduo ou cobrir subparte dos exemplos positivos
      * presentes e negativos ausêntes, ele é considerado dominado.
-     *@author Tarcísio Pontes
-     * @param p Pattern - indivíduo candidato a substituir o pior indivíduo de Pk.
+     *
+     * @param p  Pattern - indivíduo candidato a substituir o pior indivíduo de Pk.
      * @param Pk Pattern[] - população com os k melhores indivíduos
      * @return boolean - se novo indivíduo é relevante
+     * @author Tarcísio Pontes
      */
-    public static boolean ehRelevante(Pattern p, Pattern[] Pk){
-        for(int i = 0; i  < Pk.length; i++){
-            if(Pk[i].sobrescreve(p) != -1){
+    public static boolean ehRelevante(Pattern p, Pattern[] Pk) {
+        for (int i = 0; i < Pk.length; i++) {
+            if (Pk[i].sobrescreve(p) != -1) {
                 return false;
             }
         }
         return true;
     }
-    
+
 }
